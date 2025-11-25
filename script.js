@@ -3,6 +3,7 @@ class QuizApp {
         this.currentQuestion = 1;
         this.totalQuestions = 16;
         this.answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+        this.selectionOrder = []; // Track the order of selections
         this.init();
     }
     
@@ -16,6 +17,7 @@ class QuizApp {
         document.getElementById('prevBtn').addEventListener('click', () => this.previousQuestion());
         document.getElementById('nextBtn').addEventListener('click', () => this.nextQuestion());
         document.getElementById('finishBtn').addEventListener('click', () => this.finishQuiz());
+        document.getElementById('resetBtn').addEventListener('click', () => this.resetCurrentQuestion());
     }
     
     displayQuestion() {
@@ -25,72 +27,135 @@ class QuizApp {
         const optionsGrid = document.getElementById('optionsGrid');
         optionsGrid.innerHTML = '';
         
+        // Reset selection order for current question
+        this.selectionOrder = [];
+        
         question.options.forEach((option, index) => {
             const optionDiv = document.createElement('div');
             optionDiv.className = `option-card ${option.color}`;
+            optionDiv.dataset.optionIndex = index;
             
-            const savedScore = this.answers[this.currentQuestion] ? this.answers[this.currentQuestion][index] : '';
+            // Get saved selection order if exists
+            const savedAnswers = this.answers[this.currentQuestion] || {};
+            const savedScore = savedAnswers[index] || 0;
+            let selectionText = '';
+            let isSelected = false;
+            
+            if (savedScore > 0) {
+                const selectionNumber = 5 - savedScore; // Convert score back to selection order
+                selectionText = `${selectionNumber}. wybór (${savedScore} pkt)`;
+                isSelected = true;
+                this.selectionOrder[selectionNumber - 1] = index;
+            }
             
             optionDiv.innerHTML = `
                 <div class="option-header">
                     <h3>${option.text}</h3>
-                    <input type="number" 
-                           class="score-input" 
-                           min="1" 
-                           max="4" 
-                           data-option="${index}"
-                           value="${savedScore}"
-                           placeholder="1-4">
+                    <div class="selection-indicator ${isSelected ? 'selected' : ''}" data-option="${index}">
+                        ${selectionText || 'Kliknij aby wybrać'}
+                    </div>
                 </div>
                 <div class="option-description">
                     ${option.description.split('\n').map(line => `<p>${line}</p>`).join('')}
                 </div>
             `;
             
+            // Add click event to the entire card
+            optionDiv.addEventListener('click', (e) => this.handleOptionClick(index));
+            
             optionsGrid.appendChild(optionDiv);
-        });
-        
-        // Bind input events
-        document.querySelectorAll('.score-input').forEach(input => {
-            input.addEventListener('input', (e) => this.handleScoreInput(e));
-            input.addEventListener('blur', () => this.validateCurrentQuestion());
         });
         
         this.validateCurrentQuestion();
         this.updateNavigationButtons();
     }
     
-    handleScoreInput(event) {
-        const input = event.target;
-        const optionIndex = parseInt(input.dataset.option);
-        const score = parseInt(input.value) || 0;
+    handleOptionClick(optionIndex) {
+        // Check if this option is already selected
+        const currentAnswers = this.answers[this.currentQuestion] || {};
+        const currentScore = currentAnswers[optionIndex] || 0;
         
-        // Validate input range
-        if (score < 1 || score > 4) {
-            input.value = '';
-            return;
+        if (currentScore > 0) {
+            // Option is already selected, remove it and shift others
+            this.removeSelection(optionIndex);
+        } else {
+            // Add new selection
+            this.addSelection(optionIndex);
         }
         
-        // Save answer
+        this.updateDisplay();
+        this.saveAnswers();
+        this.validateCurrentQuestion();
+    }
+    
+    addSelection(optionIndex) {
+        if (this.selectionOrder.length < 4) {
+            this.selectionOrder.push(optionIndex);
+        }
+    }
+    
+    removeSelection(optionIndex) {
+        const selectionIndex = this.selectionOrder.indexOf(optionIndex);
+        if (selectionIndex > -1) {
+            this.selectionOrder.splice(selectionIndex, 1);
+        }
+    }
+    
+    updateDisplay() {
+        const question = questionnaireData.find(q => q.id === this.currentQuestion);
+        
+        question.options.forEach((option, index) => {
+            const optionCard = document.querySelector(`[data-option-index="${index}"]`);
+            const indicator = optionCard.querySelector('.selection-indicator');
+            
+            const selectionIndex = this.selectionOrder.indexOf(index);
+            
+            if (selectionIndex > -1) {
+                const selectionNumber = selectionIndex + 1;
+                const score = 5 - selectionNumber; // 4, 3, 2, 1
+                indicator.textContent = `${selectionNumber}. wybór (${score} pkt)`;
+                indicator.classList.add('selected');
+                optionCard.classList.add('option-selected');
+            } else {
+                indicator.textContent = 'Kliknij aby wybrać';
+                indicator.classList.remove('selected');
+                optionCard.classList.remove('option-selected');
+            }
+        });
+    }
+    
+    saveAnswers() {
         if (!this.answers[this.currentQuestion]) {
             this.answers[this.currentQuestion] = {};
         }
-        this.answers[this.currentQuestion][optionIndex] = score;
         
-        // Save to localStorage
+        // Clear current answers
+        const question = questionnaireData.find(q => q.id === this.currentQuestion);
+        question.options.forEach((option, index) => {
+            this.answers[this.currentQuestion][index] = 0;
+        });
+        
+        // Set new answers based on selection order
+        this.selectionOrder.forEach((optionIndex, selectionIndex) => {
+            const score = 4 - selectionIndex; // 4, 3, 2, 1
+            this.answers[this.currentQuestion][optionIndex] = score;
+        });
+        
         localStorage.setItem('quizAnswers', JSON.stringify(this.answers));
-        
+    }
+    
+    resetCurrentQuestion() {
+        this.selectionOrder = [];
+        if (this.answers[this.currentQuestion]) {
+            delete this.answers[this.currentQuestion];
+        }
+        localStorage.setItem('quizAnswers', JSON.stringify(this.answers));
+        this.updateDisplay();
         this.validateCurrentQuestion();
     }
     
     validateCurrentQuestion() {
-        const currentAnswers = this.answers[this.currentQuestion] || {};
-        const scores = Object.values(currentAnswers).filter(score => score >= 1 && score <= 4);
-        
-        // Check if we have exactly 4 scores and they are unique
-        const isValid = scores.length === 4 && 
-                       new Set(scores).size === 4 && 
-                       scores.every(score => [1, 2, 3, 4].includes(score));
+        const isValid = this.selectionOrder.length === 4;
         
         const validationMessage = document.getElementById('validationMessage');
         const nextBtn = document.getElementById('nextBtn');
