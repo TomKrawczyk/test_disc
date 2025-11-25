@@ -76,6 +76,8 @@
     
     <script>
         document.getElementById('startQuiz').addEventListener('click', function() {
+            // Clear any existing answers before starting
+            localStorage.removeItem('quizAnswers');
             window.location.href = 'quiz.html';
         });
     </script>
