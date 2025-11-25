@@ -30,13 +30,15 @@ class QuizApp {
         // Reset selection order for current question
         this.selectionOrder = [];
         
+        // Load saved answers if they exist
+        const savedAnswers = this.answers[this.currentQuestion] || {};
+        
         question.options.forEach((option, index) => {
             const optionDiv = document.createElement('div');
             optionDiv.className = `option-card ${option.color}`;
             optionDiv.dataset.optionIndex = index;
             
             // Get saved selection order if exists
-            const savedAnswers = this.answers[this.currentQuestion] || {};
             const savedScore = savedAnswers[index] || 0;
             let selectionText = '';
             let isSelected = false;
@@ -75,13 +77,18 @@ class QuizApp {
         const currentAnswers = this.answers[this.currentQuestion] || {};
         const currentScore = currentAnswers[optionIndex] || 0;
         
+        // If already selected, do nothing (user must use reset button)
         if (currentScore > 0) {
-            // Option is already selected, remove it and shift others
-            this.removeSelection(optionIndex);
-        } else {
-            // Add new selection
-            this.addSelection(optionIndex);
+            return;
         }
+        
+        // If we already have 4 selections, do nothing
+        if (this.selectionOrder.length >= 4) {
+            return;
+        }
+        
+        // Add new selection automatically
+        this.addSelection(optionIndex);
         
         this.updateDisplay();
         this.saveAnswers();
@@ -91,13 +98,6 @@ class QuizApp {
     addSelection(optionIndex) {
         if (this.selectionOrder.length < 4) {
             this.selectionOrder.push(optionIndex);
-        }
-    }
-    
-    removeSelection(optionIndex) {
-        const selectionIndex = this.selectionOrder.indexOf(optionIndex);
-        if (selectionIndex > -1) {
-            this.selectionOrder.splice(selectionIndex, 1);
         }
     }
     
