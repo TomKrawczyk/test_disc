@@ -1,1 +1,45 @@
-
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kwestionariusz - Pytanie</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Kwestionariusz Stylu Interpersonalnego</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">
+                Pytanie <span id="currentQuestion">1</span> z <span id="totalQuestions">16</span>
+            </div>
+        </header>
+        
+        <main class="quiz-main">
+            <div class="question-card" id="questionCard">
+                <h2>Pytanie <span id="questionNumber">1</span></h2>
+                
+                <div class="options-grid" id="optionsGrid">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+                
+                <div class="validation-message" id="validationMessage">
+                    Musisz przypisać każdą liczbę (1, 2, 3, 4) dokładnie raz!
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button id="prevBtn" class="nav-btn prev-btn" disabled>Poprzednie</button>
+                <button id="nextBtn" class="nav-btn next-btn" disabled>Następne</button>
+                <button id="finishBtn" class="nav-btn finish-btn" style="display: none;">Zobacz Wyniki</button>
+            </div>
+        </main>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
