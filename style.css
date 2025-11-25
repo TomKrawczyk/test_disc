@@ -272,22 +272,6 @@ header h1 {
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
 }
 
-.option-card.red {
-    border-left: 4px solid #dc3545;
-}
-
-.option-card.blue {
-    border-left: 4px solid #007bff;
-}
-
-.option-card.green {
-    border-left: 4px solid #28a745;
-}
-
-.option-card.yellow {
-    border-left: 4px solid #ffc107;
-}
-
 .option-header {
     display: flex;
     justify-content: space-between;
