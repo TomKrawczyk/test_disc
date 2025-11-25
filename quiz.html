@@ -22,12 +22,26 @@
             <div class="question-card" id="questionCard">
                 <h2>Pytanie <span id="questionNumber">1</span></h2>
                 
+                <div class="instruction-text">
+                    <p>Zaznacz opcje w kolejności od najbardziej do najmniej pasującej do Ciebie:</p>
+                    <ul>
+                        <li><strong>1. kliknięcie</strong> = najbardziej mnie opisuje (4 punkty)</li>
+                        <li><strong>2. kliknięcie</strong> = drugie miejsce (3 punkty)</li>
+                        <li><strong>3. kliknięcie</strong> = trzecie miejsce (2 punkty)</li>
+                        <li><strong>4. kliknięcie</strong> = najmniej mnie opisuje (1 punkt)</li>
+                    </ul>
+                </div>
+                
                 <div class="options-grid" id="optionsGrid">
                     <!-- Options will be populated by JavaScript -->
                 </div>
                 
                 <div class="validation-message" id="validationMessage">
-                    Musisz przypisać każdą liczbę (1, 2, 3, 4) dokładnie raz!
+                    Musisz zaznaczyć wszystkie cztery opcje w kolejności!
+                </div>
+                
+                <div class="reset-section">
+                    <button id="resetBtn" class="reset-btn">Wyczyść odpowiedzi</button>
                 </div>
             </div>
             
