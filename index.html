@@ -1,1 +1,83 @@
-
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kwestionariusz Stylu Interpersonalnego</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Kwestionariusz Stylu Interpersonalnego</h1>
+        </header>
+        
+        <main class="instructions">
+            <div class="instruction-card">
+                <h2>Instrukcja</h2>
+                <p>Na kwestionariuszu znajduje się <strong>16 rzędów z hasłami</strong>. Każdy rząd składa się z czterech głównych haseł, definiowanych szeregiem dodatkowych słów.</p>
+                
+                <p>Spośród tych czterech haseł – nawet, jeżeli żadne z pojęć Ciebie nie charakteryzuje zbyt dokładnie – wybierz to, które jest <strong>najbliższe</strong>, przypisując mu liczbę <strong>„4"</strong>.</p>
+                
+                <p>Liczby <strong>„3"</strong> i <strong>„2"</strong> przypisz pojęciom, które Cię opisują w następnej kolejności.</p>
+                
+                <p>Pojęciu, które <strong>najgorzej</strong> Ciebie opisuje przypisz liczbę <strong>„1"</strong>.</p>
+                
+                <div class="scoring-guide">
+                    <h3>System punktacji:</h3>
+                    <ul>
+                        <li><strong>4</strong> = ze wszystkich czterech pojęć, to słowo opisuje mnie najlepiej</li>
+                        <li><strong>3</strong> = ze wszystkich trzech pojęć, to słowo opisuje mnie najlepiej</li>
+                        <li><strong>2</strong> = z pozostałych dwóch pojęć, to słowo bardziej mnie opisuje</li>
+                        <li><strong>1</strong> = ze wszystkich czterech pojęć, to słowo opisuje mnie najgorzej</li>
+                    </ul>
+                </div>
+                
+                <div class="example">
+                    <h3>Przykład:</h3>
+                    <div class="example-row">
+                        <div class="example-option">
+                            <span class="score">3</span>
+                            <div class="option-content">
+                                <strong>O artystycznym usposobieniu</strong>
+                            </div>
+                        </div>
+                        <div class="example-option highlight">
+                            <span class="score">4</span>
+                            <div class="option-content">
+                                <strong>Techniczny</strong>
+                                <small>/ najbardziej mnie opisuje /</small>
+                            </div>
+                        </div>
+                        <div class="example-option">
+                            <span class="score">1</span>
+                            <div class="option-content">
+                                <strong>Produktywny</strong>
+                                <small>/ najmniej mnie opisuje /</small>
+                            </div>
+                        </div>
+                        <div class="example-option">
+                            <span class="score">2</span>
+                            <div class="option-content">
+                                <strong>Wspierający innych</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="important">Staraj się wybierać te odpowiedzi, które najbardziej Ciebie charakteryzują – <em>taki jestem najczęściej, w większości sytuacji, w większości kontaktów z innymi, lub podczas większości zadań, które wykonuję.</em></p>
+            </div>
+            
+            <div class="start-section">
+                <button id="startQuiz" class="start-btn">Rozpocznij Kwestionariusz</button>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.getElementById('startQuiz').addEventListener('click', function() {
+            window.location.href = 'quiz.html';
+        });
+    </script>
+</body>
+</html>
