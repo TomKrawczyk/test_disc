@@ -13,7 +13,7 @@ body {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 40px 20px;
 }
@@ -212,10 +212,35 @@ header h1 {
 
 .question-card h2 {
     color: #2c3e50;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-align: center;
     font-size: 1.8rem;
     font-weight: 400;
+}
+
+/* Instruction text for new system */
+.instruction-text {
+    background: #e3f2fd;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    border-left: 4px solid #2196f3;
+}
+
+.instruction-text p {
+    margin-bottom: 15px;
+    color: #1565c0;
+    font-weight: 500;
+}
+
+.instruction-text ul {
+    list-style: none;
+    padding: 0;
+}
+
+.instruction-text li {
+    padding: 5px 0;
+    color: #1976d2;
 }
 
 .options-grid {
@@ -229,13 +254,22 @@ header h1 {
     background: white;
     border-radius: 6px;
     padding: 20px;
-    border: 1px solid #dee2e6;
+    border: 2px solid #dee2e6;
     transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
 }
 
 .option-card:hover {
     border-color: #007bff;
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.option-card.option-selected {
+    border-color: #28a745;
+    background: #f8fff8;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
 }
 
 .option-card.red {
@@ -268,21 +302,23 @@ header h1 {
     font-weight: 500;
 }
 
-.score-input {
-    width: 50px;
-    height: 36px;
-    font-size: 1.2rem;
-    text-align: center;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
+.selection-indicator {
+    background: #f8f9fa;
+    color: #6c757d;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
     font-weight: 600;
-    transition: border-color 0.2s ease;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+    min-width: 140px;
+    text-align: center;
 }
 
-.score-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+.selection-indicator.selected {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
 }
 
 .option-description {
@@ -305,6 +341,27 @@ header h1 {
     display: none;
     margin-bottom: 20px;
     border: 1px solid #f5c6cb;
+}
+
+/* Reset section */
+.reset-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.reset-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.reset-btn:hover {
+    background: #5a6268;
 }
 
 /* Navigation */
@@ -600,6 +657,17 @@ header h1 {
     
     .options-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .option-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .selection-indicator {
+        min-width: auto;
+        width: 100%;
     }
     
     .navigation {
