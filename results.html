@@ -1,1 +1,149 @@
-
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyniki Kwestionariusza</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Wyniki Kwestionariusza</h1>
+        </header>
+        
+        <main class="results-main">
+            <div class="results-summary">
+                <h2>Twoje wyniki:</h2>
+                <div class="scores-grid" id="scoresGrid">
+                    <!-- Scores will be populated by JavaScript -->
+                </div>
+                <div class="total-score">
+                    Suma całkowita: <span id="totalScore">160</span> punktów
+                </div>
+            </div>
+            
+            <div class="chart-section">
+                <h2>Diagram osobowości</h2>
+                <div class="chart-container">
+                    <div class="chart-bars" id="chartBars">
+                        <!-- Chart bars will be populated by JavaScript -->
+                    </div>
+                    <div class="chart-scale">
+                        <span>20</span>
+                        <span>30</span>
+                        <span>40</span>
+                        <span>50</span>
+                        <span>60</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="interpretation">
+                <h2>Interpretacja wyników</h2>
+                <div class="interpretation-text">
+                    <p><strong>Wyniki powyżej 40 punktów</strong> wskazują na Twoją dużą skłonność do przejawiania danych zachowań.</p>
+                    <p><strong>Wyniki poniżej 35 punktów</strong> mówią o tym, że wolisz tego typu zachowań unikać.</p>
+                    <p><strong>Wyniki między 35 a 40 punktów</strong> oznaczają, że możesz rzadziej przejawiać takie zachowania lub działasz w tym stylu bez zdecydowania.</p>
+                </div>
+                
+                <div class="personality-types">
+                    <div class="personality-type red">
+                        <h3>Czerwony - Dominujący</h3>
+                        <p>Pewny siebie, zdecydowany, lubi kontrolę i podejmowanie decyzji</p>
+                    </div>
+                    <div class="personality-type blue">
+                        <h3>Niebieski - Analityczny</h3>
+                        <p>Systematyczny, dokładny, lubi analizować i planować</p>
+                    </div>
+                    <div class="personality-type green">
+                        <h3>Zielony - Wspierający</h3>
+                        <p>Odpowiedzialny, lojalny, skupiony na relacjach i współpracy</p>
+                    </div>
+                    <div class="personality-type yellow">
+                        <h3>Żółty - Ekspresyjny</h3>
+                        <p>Entuzjastyczny, towarzyski, kreatywny i pełen energii</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <button id="restartBtn" class="action-btn">Wypełnij ponownie</button>
+                <button id="printBtn" class="action-btn">Wydrukuj wyniki</button>
+            </div>
+        </main>
+    </div>
+    
+    <script src="data.js"></script>
+    <script>
+        // Load and display results
+        document.addEventListener('DOMContentLoaded', function() {
+            displayResults();
+            
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                localStorage.removeItem('quizAnswers');
+                window.location.href = 'index.html';
+            });
+            
+            document.getElementById('printBtn').addEventListener('click', function() {
+                window.print();
+            });
+        });
+        
+        function displayResults() {
+            const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+            const scores = calculateScores(answers);
+            
+            // Display numerical scores
+            const scoresGrid = document.getElementById('scoresGrid');
+            scoresGrid.innerHTML = '';
+            
+            Object.keys(colorNames).forEach(color => {
+                const scoreCard = document.createElement('div');
+                scoreCard.className = `score-card ${color}`;
+                scoreCard.innerHTML = `
+                    <h3>${colorNames[color]}</h3>
+                    <div class="score-value">${scores[color]}</div>
+                `;
+                scoresGrid.appendChild(scoreCard);
+            });
+            
+            // Display chart
+            displayChart(scores);
+        }
+        
+        function calculateScores(answers) {
+            const scores = { red: 0, blue: 0, green: 0, yellow: 0 };
+            
+            for (let i = 1; i <= 16; i++) {
+                if (answers[i]) {
+                    const question = questionnaireData.find(q => q.id === i);
+                    question.options.forEach((option, index) => {
+                        const score = answers[i][index] || 0;
+                        scores[option.color] += score;
+                    });
+                }
+            }
+            
+            return scores;
+        }
+        
+        function displayChart(scores) {
+            const chartBars = document.getElementById('chartBars');
+            chartBars.innerHTML = '';
+            
+            Object.keys(colorNames).forEach(color => {
+                const bar = document.createElement('div');
+                bar.className = `chart-bar ${color}`;
+                const percentage = (scores[color] / 60) * 100; // Max score per color is 64, but scale to 60 for better visualization
+                bar.style.width = `${Math.min(percentage, 100)}%`;
+                bar.innerHTML = `
+                    <span class="bar-label">${colorNames[color].split(' - ')[1]}</span>
+                    <span class="bar-value">${scores[color]}</span>
+                `;
+                chartBars.appendChild(bar);
+            });
+        }
+    </script>
+</body>
+</html>
